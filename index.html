@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Portafolio de Braulio Figueroa, estudiante de Diseño: objetos interactivos, electrónica y programación.">
+<title>Braulio Figueroa — Diseño</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:wght@800;900&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Plantilla base de portafolio minimalista.
+   Layout: una columna estrecha de lectura; índice de proyectos en filas;
+   cada proyecto es un <article> que se puede duplicar. */
+:root {
+  /* Paleta "Placa": máscara de soldadura, cobre, serigrafía, FR4 */
+  --negro: #0b0d0c;
+  --blanco: #f4f5f0;         /* serigrafía */
+  --verde: #0f3d2a;          /* máscara de soldadura */
+  --cobre: #9a5a24;          /* cobre para texto sobre fondo claro */
+  --cobre-claro: #d4915a;    /* cobre sobre fondos oscuros */
+  --cobre-boton: #b87333;    /* cobre de pistas y pads */
+  --fr4: #d8cba8;            /* fibra FR4 */
+  --bg: var(--blanco);
+  --fg: var(--negro);
+  --suave: #5d5c53;          /* texto secundario */
+  --linea: #dcd9cd;
+  --fondo-img: var(--fr4);
+  --sobre-verde: #f4f5f0;    /* texto sobre bloques verdes */
+
+  --f-display: "Doto", "JetBrains Mono", ui-monospace, monospace;   /* matriz de puntos, como un display LED */
+  --f-texto: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  --ancho: 1120px;
+  --lectura: 64ch;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: var(--negro); --fg: var(--blanco);
+    --cobre: var(--cobre-claro); --suave: #a3a095; --linea: #2a2b25; --fondo-img: #1c1e19;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: var(--negro); --fg: var(--blanco);
+  --cobre: var(--cobre-claro); --suave: #a3a095; --linea: #2a2b25; --fondo-img: #1c1e19;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--f-texto);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img, video { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--cobre); outline-offset: 3px; }
+
+.contenedor {
+  max-width: var(--ancho);
+  margin-inline: auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.etiqueta {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--suave);
+}
+
+/* ---------- Encabezado ---------- */
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg);
+}
+.encabezado {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--bg);
+  border-bottom: 1px solid var(--linea);
+}
+.encabezado .contenedor {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding-block: 18px;
+}
+.marca { font-weight: 700; font-size: 18px; text-decoration: none; letter-spacing: -.01em; }
+.marca span { color: var(--cobre); }
+.nav { display: flex; gap: 24px; }
+.nav a { text-decoration: none; font-size: 15px; color: var(--suave); }
+.nav a:hover { color: var(--fg); }
+
+/* ---------- Intro ---------- */
+.intro { padding-block: 96px 72px; }
+.intro h1 {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: clamp(34px, 5.4vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -.025em;
+  margin: 0 0 24px;
+  max-width: 18ch;
+  text-wrap: balance;
+}
+.intro h1 em { font-style: normal; color: var(--cobre); }
+.intro p { margin: 0; max-width: 52ch; color: var(--suave); font-size: 18px; }
+
+/* ---------- Índice de proyectos ---------- */
+.indice { padding-block: 0 96px; }
+.indice-cabecera {
+  display: grid; grid-template-columns: 1fr auto; gap: 16px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--fg);
+}
+.lista { list-style: none; margin: 0; padding: 0; }
+.fila {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) auto;
+  gap: 24px; align-items: center;
+  padding-block: 20px;
+  border-bottom: 1px solid var(--linea);
+  text-decoration: none;
+}
+.fila img { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; background: var(--fondo-img); }
+.fila h3 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -.01em; }
+.fila p { margin: 4px 0 0; color: var(--suave); font-size: 15px; }
+.fila .anio { font-family: var(--f-mono); font-size: 14px; color: var(--cobre); font-variant-numeric: tabular-nums; }
+.fila:hover h3 { color: var(--cobre); }
+
+/* ---------- Proyecto ---------- */
+.proyecto { border-top: 1px solid var(--linea); padding-block: 96px; scroll-margin-top: 64px; }
+.proyecto-cabecera {
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 56px; align-items: end; margin-bottom: 72px;
+}
+.proyecto-cabecera h2 {
+  font-family: var(--f-display); font-weight: 900;
+  font-size: clamp(40px, 6.5vw, 84px); line-height: 1; letter-spacing: -.01em;
+  margin: 12px 0 28px; text-wrap: balance;
+}
+.bajada { font-size: 20px; line-height: 1.5; margin: 0; max-width: 34ch; }
+.portada { background: #e9d3a6; } /* fondo de la foto, evita salto al cargar */
+.portada img { width: 100%; }
+
+.ficha {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 24px; margin: 0 0 72px; padding-block: 24px;
+  border-block: 1px solid var(--linea);
+}
+.ficha div { min-width: 0; }
+.ficha dt { margin-bottom: 6px; }
+.ficha dd { margin: 0; font-size: 15px; line-height: 1.5; }
+
+.cuerpo {
+  display: grid; grid-template-columns: 220px minmax(0, var(--lectura));
+  gap: 56px; margin-bottom: 72px;
+}
+.cuerpo h3 { margin: 4px 0 0; }
+.cuerpo p { margin: 0 0 1.1em; }
+
+.sin-titulo > div { grid-column: 2; }
+
+/* Sobre mí */
+.sobre-mi { border-top: 1px solid var(--linea); padding-block: 96px; scroll-margin-top: 64px; }
+.sobre-mi .cuerpo { margin-bottom: 0; }
+.sobre-mi h2 { margin: 4px 0 0; }
+
+/* Enlace de texto bajo la presentación */
+.enlace-texto {
+  display: inline-block; margin-top: 20px;
+  font-family: var(--f-mono); font-size: 14px; letter-spacing: .04em;
+  color: var(--cobre); text-decoration: none; border-bottom: 1px solid var(--cobre);
+}
+.enlace-texto:hover { color: var(--fg); border-color: var(--fg); }
+
+/* Contacto */
+.contacto { border-top: 1px solid var(--linea); padding-block: 0 96px; scroll-margin-top: 64px; }
+.sobre-mi + .contacto { border-top: 0; }
+.contacto .cuerpo { margin-bottom: 0; }
+.contacto h2 { margin: 4px 0 0; }
+.contacto-lista { margin: 0; border-top: 1px solid var(--linea); }
+.contacto-lista > div {
+  display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; align-items: center;
+  padding-block: 16px; border-bottom: 1px solid var(--linea);
+}
+.contacto-lista dd { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 18px; min-width: 0; overflow-wrap: anywhere; }
+.contacto-lista a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--cobre); }
+.contacto-lista a:hover { color: var(--cobre); }
+#correo { user-select: all; }
+.copiar {
+  font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+  padding: 6px 12px; border: 1px solid var(--cobre); background: transparent; color: var(--cobre); cursor: pointer;
+}
+.copiar:hover { background: var(--cobre-boton); color: var(--negro); border-color: var(--cobre-boton); }
+
+/* Bloque verde de concepto */
+.concepto {
+  background: var(--verde); color: var(--sobre-verde);
+  margin-bottom: 72px;
+}
+.concepto .interior {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+.concepto .celda { padding: 48px 40px; min-width: 0; }
+.concepto .celda + .celda { border-left: 1px solid rgba(246, 247, 245, .18); }
+.concepto .etiqueta { color: var(--cobre-claro); }
+.concepto h4 {
+  font-family: var(--f-display); font-weight: 900;
+  font-size: clamp(28px, 3.4vw, 40px); letter-spacing: 0; line-height: 1.1;
+  margin: 12px 0 16px;
+}
+.concepto p { margin: 0; max-width: 40ch; color: rgba(246, 247, 245, .88); }
+
+/* Galería */
+.galeria {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px; margin-bottom: 72px;
+}
+.galeria figure { margin: 0; min-width: 0; }
+.galeria video, .galeria img { width: 100%; background: var(--fondo-img); }
+.galeria figcaption { margin-top: 10px; font-size: 14px; color: var(--suave); }
+.g-video { grid-column: span 5; }
+.g-video video { aspect-ratio: 9 / 16; object-fit: cover; }
+.g-texto { grid-column: span 7; align-self: end; padding-left: 24px; }
+.g-texto p { max-width: 42ch; margin: 0 0 1em; }
+.g-a, .g-b, .g-c { grid-column: span 4; }
+.g-a img, .g-b video, .g-c video { aspect-ratio: 9 / 16; object-fit: cover; }
+
+.tecnica { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0 0 1.4em; }
+.tecnica li {
+  font-family: var(--f-mono); font-size: 13px;
+  padding: 4px 10px; border: 1px solid var(--linea);
+}
+
+.enlace {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 22px; background: var(--cobre-boton); color: var(--negro);
+  text-decoration: none; font-weight: 600; font-size: 15px;
+}
+.enlace:hover { background: var(--verde); color: var(--sobre-verde); }
+
+/* Variante de galería para fotos horizontales */
+.g-h3 { grid-column: span 4; }
+.g-h2 { grid-column: span 6; }
+.g-h3 img, .g-h2 img { aspect-ratio: 3 / 2; object-fit: cover; }
+.g-esquema { grid-column: 1 / -1; }
+.g-esquema img { width: 100%; background: #fff; border: 1px solid var(--linea); }
+
+/* Galería de Juanito: alto 3:4 junto a ancho, misma altura por fila */
+.j-alto { grid-column: span 4; }
+.j-ancho { grid-column: span 8; }
+.j-alto img, .j-alto video { aspect-ratio: 3 / 4; object-fit: cover; }
+.j-ancho img, .j-ancho video { aspect-ratio: 1.535; object-fit: cover; }
+.g-video img { width: 100%; }
+.m-ancho { grid-column: span 8; }
+.m-alto { grid-column: span 4; }
+.m-ancho img { aspect-ratio: 4 / 3; object-fit: cover; }
+.m-alto img, .m-alto video { aspect-ratio: .652; object-fit: cover; object-position: 50% 60%; }
+
+/* Lista de componentes (BOM) */
+.bom { margin-bottom: 0; }
+.bom-lista {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px;
+  border-top: 1px solid var(--linea);
+}
+.bom-lista li { padding-block: 10px; border-bottom: 1px solid var(--linea); font-size: 15px; min-width: 0; }
+
+/* ---------- Pie ---------- */
+.pie { border-top: 1px solid var(--fg); }
+.pie .contenedor {
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding-block: 28px 40px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .intro { padding-block: 64px 48px; }
+  .proyecto, .sobre-mi { padding-block: 64px; }
+  .contacto { padding-block: 0 64px; }
+  .contacto-lista > div { grid-template-columns: 1fr; gap: 6px; }
+  .proyecto-cabecera { grid-template-columns: 1fr; gap: 32px; margin-bottom: 48px; }
+  .ficha { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cuerpo { grid-template-columns: 1fr; gap: 12px; }
+  .sin-titulo > div { grid-column: auto; }
+  .concepto .interior { grid-template-columns: 1fr; }
+  .concepto .celda + .celda { border-left: 0; border-top: 1px solid rgba(246, 247, 245, .18); }
+  .g-video, .g-texto { grid-column: 1 / -1; }
+  .g-texto { padding-left: 0; }
+  .g-a, .g-b, .g-c { grid-column: span 6; }
+  .g-a { grid-column: 1 / -1; }
+  .g-a img { aspect-ratio: 4 / 5; }
+  .g-h3, .g-h2 { grid-column: span 6; }
+  .j-alto, .j-ancho, .m-ancho, .m-alto { grid-column: 1 / -1; }
+  .m-ancho img, .m-alto img, .m-alto video { aspect-ratio: auto; }
+  .j-alto img, .j-alto video { aspect-ratio: auto; }
+  .j-ancho img, .j-ancho video { aspect-ratio: auto; }
+  .g-h3.g-ancha { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .bom-lista { grid-template-columns: 1fr; }
+  .nav { gap: 16px; }
+  .fila { grid-template-columns: 88px minmax(0, 1fr); gap: 16px; }
+  .fila .anio { grid-column: 2; margin-top: -8px; }
+  .fila h3 { font-size: 20px; }
+  .ficha { grid-template-columns: 1fr; }
+  .concepto .celda { padding: 36px 24px; }
+}
+</style>
+</head>
+<body>
+
+<header class="encabezado">
+  <div class="contenedor">
+    <a class="marca" href="#inicio">Portafolio<span>.</span></a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#proyectos">Proyectos</a>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+
+  <!-- INTRO: cambia el texto por tu presentación -->
+  <section class="intro contenedor">
+    <p class="etiqueta" style="margin-bottom:20px">Diseño · Universidad Diego Portales</p>
+    <h1>Braulio Figueroa</h1>
+    <p>Estudiante de cuarto año de Diseño, con formación en diseño gráfico y experiencia en electrónica, programación de microcontroladores y prototipado de objetos interactivos.</p>
+    <a class="enlace-texto" href="https://github.com/brauliofigueroa2001" target="_blank" rel="noopener">GitHub ↗</a>
+  </section>
+
+  <!-- ÍNDICE: duplica un <li> por cada proyecto nuevo -->
+  <section class="indice contenedor" id="proyectos" aria-labelledby="titulo-proyectos">
+    <div class="indice-cabecera">
+      <h2 class="etiqueta" id="titulo-proyectos" style="margin:0">Proyectos</h2>
+      <span class="etiqueta">Año</span>
+    </div>
+    <ul class="lista">
+      <li>
+        <a class="fila" href="#maquina-asombrosa">
+          <img src="media/maquina-frente.jpg" alt="">
+          <div>
+            <h3>Máquina Asombrosa</h3>
+            <p>Máquina sentimental · Objeto interactivo</p>
+          </div>
+          <span class="anio">2025</span>
+        </a>
+      </li>
+      <li>
+        <a class="fila" href="#juanito-la-jaiba">
+          <img src="media/juanito-final.jpg" alt="">
+          <div>
+            <h3>Juanito la Jaiba</h3>
+            <p>Máquina de saludo · Objeto interactivo</p>
+          </div>
+          <span class="anio">2025</span>
+        </a>
+      </li>
+      <li>
+        <a class="fila" href="#meowtech">
+          <img src="media/meowtech-portada.jpg" alt="">
+          <div>
+            <h3>MeowTech</h3>
+            <p>Juguete interactivo para gatos · Electrónica análoga</p>
+          </div>
+          <span class="anio">2025</span>
+        </a>
+      </li>
+      <li>
+        <a class="fila" href="#la-voz-de-las-plantas">
+          <img src="media/plantas-portada.jpg" alt="">
+          <div>
+            <h3>La Voz de las Plantas</h3>
+            <p>Bio-sonificación · Visualización generativa</p>
+          </div>
+          <span class="anio">2026</span>
+        </a>
+      </li>
+      <!--
+      <li>
+        <a class="fila" href="#id-del-proyecto">
+          <img src="media/miniatura.jpg" alt="">
+          <div><h3>Nombre del proyecto</h3><p>Categoría · Tipo</p></div>
+          <span class="anio">2026</span>
+        </a>
+      </li>
+      -->
+    </ul>
+  </section>
+
+  <!-- PROYECTO: copia todo este <article> para cada proyecto -->
+  <article class="proyecto" id="maquina-asombrosa">
+    <div class="contenedor">
+
+      <header class="proyecto-cabecera">
+        <div>
+          <p class="etiqueta">Proyecto de examen · 2025</p>
+          <h2>Máquina Asombrosa</h2>
+          <p class="bajada">Una tragamonedas que promete mucho y entrega humo. Literalmente.</p>
+        </div>
+        <figure class="portada" style="margin:0">
+          <img src="media/maquina-frente.jpg" width="960" height="1280"
+               alt="Máquina Asombrosa: carcasa gris con forma de tragamonedas, gráfica azul y roja con notas musicales, parlante al frente y manivela de bola roja al costado.">
+        </figure>
+      </header>
+
+      <dl class="ficha">
+        <div><dt class="etiqueta">Encargo</dt><dd>Máquina sentimental que represente una figura literaria</dd></div>
+        <div><dt class="etiqueta">Figura</dt><dd>Anticlímax</dd></div>
+        <div><dt class="etiqueta">Equipo</dt><dd>Braulio Figueroa, Camila Parada, Félix Rodríguez, Miguel Vera</dd></div>
+        <div><dt class="etiqueta">Código</dt><dd>C++ sobre Arduino R4 Minima</dd></div>
+        <div><dt class="etiqueta">Evaluación</dt><dd>Nota máxima (7,0) en el examen final</dd></div>
+      </dl>
+
+      <section class="cuerpo sin-titulo">
+        <div>
+          <p>El proyecto consiste en una máquina sentimental que representa una figura literaria. Su eje es involucrar al usuario y generar una respuesta en la interacción entre ambas partes: objeto y emoción, acción y reacción, causa y efecto.</p>
+          <p>La Máquina Asombrosa se parece a una máquina tragamonedas. No tiene ninguna invitación ni promesa evidente, pero te llama a girar su manivela y ver qué pasa.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="concepto" aria-label="Concepto">
+      <div class="contenedor">
+        <div class="interior">
+          <div class="celda">
+            <p class="etiqueta">Figura retórica</p>
+            <h4>Anticlímax</h4>
+            <p>Una decepción abrupta al final de una oración, pasaje o trama: de lo importante o tenso a algo trivial, insignificante o cómico. Queremos decepcionar al usuario, y mientras más expectativa tenga, más se defraudará.</p>
+          </div>
+          <div class="celda">
+            <p class="etiqueta">Concepto</p>
+            <h4>Vender humo</h4>
+            <p>Ofrecer algo de escaso o nulo valor haciéndolo pasar por algo de mucho valor. La máquina toma la expresión al pie de la letra: una transacción en la que recibes humo. Todo en ella genera expectativa para después defraudarla.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="contenedor">
+      <div class="galeria">
+        <figure class="g-video">
+          <video src="media/maquina-funcionando.mp4" poster="media/maquina-funcionando-poster.jpg"
+                 controls playsinline preload="metadata" width="720" height="1280"></video>
+          <figcaption>La máquina funcionando.</figcaption>
+        </figure>
+        <div class="g-texto">
+          <p>El encoder rotatorio lee el giro de la manivela. Luces, sonido y vibración construyen la expectativa; el módulo humidificador entrega el humo.</p>
+          <a class="enlace" href="https://github.com/disenoUDP/dis8645-2025-2-proyectos/tree/main/00-examen/grupo-05" target="_blank" rel="noopener">Ver el desarrollo completo en GitHub ↗</a>
+        </div>
+
+        <figure class="m-ancho">
+          <img src="media/maquina-componentes.jpg" width="1600" height="1200"
+               alt="Componentes de la máquina conectados sobre la mesa: Arduino, encoder rotatorio, placa con LEDs de colores, módulo MP3, módulo humidificador, motor vibrador y parlante.">
+          <figcaption>Todos los componentes conectados antes del montaje.</figcaption>
+        </figure>
+        <figure class="m-alto">
+          <video class="bucle" src="media/prototipo-caja.mp4" poster="media/prototipo-caja-poster.jpg"
+                 muted loop playsinline preload="none" width="540" height="960"></video>
+          <figcaption>Prueba del motor vibrador en caja impresa.</figcaption>
+        </figure>
+        <figure class="g-c">
+          <video class="bucle" src="media/prototipo-mesa.mp4" poster="media/prototipo-mesa-poster.jpg"
+                 muted loop playsinline preload="none" width="480" height="848"></video>
+          <figcaption>Prototipo en mesa: todos los componentes funcionando juntos.</figcaption>
+        </figure>
+        <figure class="g-b">
+          <img src="media/maquina-interior.jpg" width="899" height="1599"
+               alt="Interior de la carcasa: placa perforada, protoboard, parlante y cables etiquetados.">
+          <figcaption>Interior: placa, parlante y cableado etiquetado.</figcaption>
+        </figure>
+        <figure class="g-a">
+          <img src="media/maquina-montaje.jpg" width="750" height="1195"
+               alt="Carcasa blanca abierta con la placa de LEDs y el encoder montados, y el Arduino, el módulo MP3 y el parlante conectados fuera.">
+          <figcaption>Montaje de la electrónica en la carcasa.</figcaption>
+        </figure>
+      </div>
+      <section class="cuerpo bom">
+        <h3 class="etiqueta">Componentes utilizados</h3>
+        <ul class="bom-lista">
+            <li>Arduino UNO R4 Minima</li>
+            <li>Mini protoboard 400 puntos</li>
+            <li>Cables Dupont</li>
+            <li>Encoder rotatorio KY-040</li>
+            <li>Módulo reproductor MP3</li>
+            <li>Motor vibrador PWM</li>
+            <li>Motor de vibración de mando Xbox 360 (reutilizado)</li>
+            <li>Mini humidificador USB-C 5 V</li>
+            <li>Micro servomotor SG90</li>
+            <li>Mini parlante 3 W</li>
+            <li>LEDs 10 mm</li>
+        </ul>
+      </section>
+    </div>
+  </article>
+
+  <!-- PROYECTO: Juanito la Jaiba -->
+  <article class="proyecto" id="juanito-la-jaiba">
+    <div class="contenedor">
+
+      <header class="proyecto-cabecera">
+        <div>
+          <p class="etiqueta">Proyecto · 2025</p>
+          <h2>Juanito la Jaiba</h2>
+          <p class="bajada">Una máquina de saludo: te sigue con la mirada y, si te acercas, te transporta a la playa.</p>
+        </div>
+        <figure class="portada" style="margin:0; background:#343c4a">
+          <img src="media/juanito-portada.jpg" width="1170" height="880"
+               alt="Modelo 3D de Juanito la Jaiba: un cangrejo rojo con ojos y tenazas sobre una base gris que aloja el sensor ultrasónico y el Arduino.">
+        </figure>
+      </header>
+
+      <dl class="ficha">
+        <div><dt class="etiqueta">Encargo</dt><dd>Una «caja negra» que pueda saludar</dd></div>
+        <div><dt class="etiqueta">Sensor</dt><dd>Radar con ultrasónico HC-SR04 sobre servomotor SG90</dd></div>
+        <div><dt class="etiqueta">Equipo</dt><dd>Braulio Figueroa, Bernardita Lobo, José Morales, Camila Parada, Francisco Stephens</dd></div>
+        <div><dt class="etiqueta">Código</dt><dd>C++ sobre Arduino</dd></div>
+      </dl>
+
+      <section class="cuerpo sin-titulo">
+        <div>
+          <p>El proyecto se centra en desarrollar una «caja negra» que pueda saludar. A partir de esa definición ahondamos en el sentido de un saludo, ya no como una actividad humana sino como una interacción que se puede emitir con otros sujetos u objetos, como una inteligencia artificial. La idea es crear una experiencia que explore la interacción de un saludo con un sitio.</p>
+          <p>La máquina es un dispositivo funcional pensado para una persona a la vez. Detecta su presencia con un «radar»: un sensor ultrasónico HC-SR04 montado sobre un servomotor SG90 que rota continuamente de 0 a 180 grados.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="concepto" aria-label="Concepto">
+      <div class="contenedor">
+        <div class="interior">
+          <div class="celda">
+            <p class="etiqueta">Pregunta</p>
+            <h4>¿Podemos saludar a un lugar?</h4>
+            <p>Un saludo es un acto en que alguien hace notar su presencia a otro. Aquí el que saluda es un objeto, y lo que responde es un sitio: la costa.</p>
+          </div>
+          <div class="celda">
+            <p class="etiqueta">Forma</p>
+            <h4>Cangrejo y concha</h4>
+            <p>El cangrejo, criatura de la costa en todo Chile, aloja el radar, los ojos y el Arduino. La concha toma el mito de escuchar el mar en ella y emite sonidos reales de playas chilenas: ambiente, gritos, pájaros y gaviotas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="contenedor">
+      <div class="galeria">
+        <figure class="g-video">
+          <img src="media/juanito-final.jpg" width="645" height="819"
+               alt="Juanito la Jaiba terminado: cangrejo rojo con ojos blancos sobre una base gris que deja ver el sensor ultrasónico.">
+          <figcaption>Juanito la Jaiba armado: el cangrejo sobre la base del radar.</figcaption>
+        </figure>
+        <div class="g-texto">
+          <p>Cuando alguien entra al rango de reconocimiento, que combina la rotación del servomotor con la distancia del ultrasónico, los ojos se mueven y siguen a la persona gracias a un segundo servomotor. A 15 cm del dispositivo, la concha, que lleva un módulo reproductor MP3 DFPlayer Mini, emite sonidos al azar hasta que la persona se aleja.</p>
+          <a class="enlace" href="https://github.com/brauliofigueroa2001/dis8645-2025-02-procesos/tree/main/00-proyecto-02/grupo-04" target="_blank" rel="noopener">Ver el desarrollo completo en GitHub ↗</a>
+        </div>
+
+        <figure class="j-alto">
+          <video class="bucle" src="media/juanito-1-radar.mp4" poster="media/juanito-1-radar-poster.jpg"
+                 muted loop playsinline preload="none" width="490" height="654"></video>
+          <figcaption>Prueba del radar: ultrasónico sobre servomotor.</figcaption>
+        </figure>
+        <figure class="j-ancho">
+          <video class="bucle" src="media/juanito-2-ojos.mp4" poster="media/juanito-2-ojos-poster.jpg"
+                 muted loop playsinline preload="none" width="716" height="406"></video>
+          <figcaption>Mecanismo de los ojos movido por un servomotor.</figcaption>
+        </figure>
+        <figure class="j-alto">
+          <img src="media/juanito-3-dfplayer.jpg" width="751" height="1000"
+               alt="Arduino UNO R4 Minima conectado a un DFPlayer Mini en una mini protoboard roja y a un altavoz con caimanes.">
+          <figcaption>Conexión del DFPlayer Mini con el altavoz.</figcaption>
+        </figure>
+        <figure class="j-ancho">
+          <img src="media/juanito-4-concha.jpg" width="1600" height="1170"
+               alt="Proceso de la concha: modelado de la espiral en Rhino, pieza impresa en 3D con soportes y concha terminada con rejilla para el altavoz.">
+          <figcaption>Carcasa de la concha: modelado, impresión y pieza final.</figcaption>
+        </figure>
+        <figure class="g-esquema">
+          <img src="media/juanito-5-cangrejo.jpg" width="1600" height="1170" style="background:transparent; border:0"
+               alt="Proceso del cangrejo: prueba de ojos, render del cangrejo sobre su base, vista de laminado y pieza roja impresa con tenazas.">
+          <figcaption>Carcasa del cangrejo: prueba de ojos, modelado, laminado e impresión.</figcaption>
+        </figure>
+      </div>
+      <section class="cuerpo bom">
+        <h3 class="etiqueta">Componentes utilizados</h3>
+        <ul class="bom-lista">
+            <li>Arduino UNO R4 Minima</li>
+            <li>Arduino UNO R4 WiFi</li>
+            <li>Sensor ultrasónico HC-SR04</li>
+            <li>Servomotores SG90 (radar y ojos)</li>
+            <li>Módulo reproductor MP3 DFPlayer Mini</li>
+            <li>Tarjeta SD</li>
+            <li>Altavoz</li>
+        </ul>
+      </section>
+    </div>
+  </article>
+
+  <!-- PROYECTO: MeowTech -->
+  <article class="proyecto" id="meowtech">
+    <div class="contenedor">
+
+      <header class="proyecto-cabecera">
+        <div>
+          <p class="etiqueta">Proyecto · 2025</p>
+          <h2>MeowTech</h2>
+          <p class="bajada">Un juguete para gatitos solitarios.</p>
+        </div>
+        <figure class="portada" style="margin:0; background:#6b6b6e">
+          <img src="media/meowtech-portada.jpg" width="1600" height="1066"
+               alt="Carcasa morada inclinada con el logo MeowTech en relieve, una varilla de madera y un señuelo de plumas colgando de un hilo.">
+        </figure>
+      </header>
+
+      <dl class="ficha">
+        <div><dt class="etiqueta">Tipo</dt><dd>Juguete interactivo y autónomo para gatos</dd></div>
+        <div><dt class="etiqueta">Sensor</dt><dd>LDR, en un circuito detector de sombra</dd></div>
+        <div><dt class="etiqueta">Equipo</dt><dd>Braulio Figueroa, Carlo Martínez, Bastián Solís</dd></div>
+        <div><dt class="etiqueta">Colaboración</dt><dd>Alanis Vásquez, Félix Rodríguez</dd></div>
+      </dl>
+
+      <section class="cuerpo sin-titulo">
+        <div>
+          <p>MeowTech es un juguete interactivo para gatos que pasan solos la mayor parte del tiempo, con espacios de juego poco recreativos, y que necesitan un dispositivo de entretención independiente y autónomo.</p>
+          <p>Concluimos que debía ser un objeto que se moviera solo, con la autonomía suficiente para que el gato pueda jugar con la menor intervención humana posible.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="concepto" aria-label="Problema y respuesta">
+      <div class="contenedor">
+        <div class="interior">
+          <div class="celda">
+            <p class="etiqueta">Problema</p>
+            <h4>Gatos solos</h4>
+            <p>Pasan gran parte del día sin compañía y con espacios de juego poco estimulantes. Un juguete común depende de que alguien lo mueva.</p>
+          </div>
+          <div class="celda">
+            <p class="etiqueta">Respuesta</p>
+            <h4>Movimiento autónomo</h4>
+            <p>Un motor le da movimiento al juguete y un sensor LDR detecta la presencia del gato por la sombra que proyecta. El circuito combina un detector de sombra con una variación de un circuito PWM.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="contenedor">
+      <div class="galeria">
+        <figure class="g-video">
+          <video src="media/meowtech-funcionando.mp4" poster="media/meowtech-funcionando-poster.jpg"
+                 controls playsinline preload="metadata" width="720" height="1280"></video>
+          <figcaption>MeowTech funcionando.</figcaption>
+        </figure>
+        <div class="g-texto">
+          <p>El sensor LDR detecta la sombra del gato y activa el motor, que mueve la varilla con el señuelo. La parte PWM del circuito regula la velocidad del motor.</p>
+          <a class="enlace" href="https://github.com/disenoUDP/dis8644-2025-1-proyectos/tree/main/00-examen/grupo-04" target="_blank" rel="noopener">Ver el desarrollo completo en GitHub ↗</a>
+        </div>
+
+        <figure class="g-esquema">
+          <img src="media/meowtech-0-esquematico.jpg" width="1031" height="487"
+               alt="Esquemático del circuito: LDR y amplificador LM324 como detector de sombra, temporizador 555 con potenciómetro de velocidad, y transistor IRLZ44N que controla el motor DC.">
+          <figcaption>Esquemático del circuito con el que se diseñó la placa.</figcaption>
+        </figure>
+        <figure class="g-h3 g-ancha">
+          <img src="media/meowtech-1-placa.jpg" width="1052" height="682"
+               alt="PCB azul sin componentes, con serigrafía blanca que marca UMBRAL y VEL MOTOR.">
+          <figcaption>La placa recién fabricada.</figcaption>
+        </figure>
+        <figure class="g-h3">
+          <img src="media/meowtech-2-componentes.jpg" width="1052" height="682"
+               alt="La misma PCB con resistencias, LEDs rojos, zócalos para los integrados y un regulador.">
+          <figcaption>Componentes soldados.</figcaption>
+        </figure>
+        <figure class="g-h3">
+          <img src="media/meowtech-3-cableado.jpg" width="1052" height="682"
+               alt="PCB con dos potenciómetros conectada con caimanes a una batería de 9 V, un interruptor y un motor DC.">
+          <figcaption>Cableado de prueba con batería, interruptor y motor.</figcaption>
+        </figure>
+        <figure class="g-h2">
+          <img src="media/meowtech-4-carcasa-cableado.jpg" width="900" height="1200" style="object-position:50% 62%"
+               alt="Carcasa morada abierta con cables trenzados que van del panel frontal a la PCB.">
+          <figcaption>Montaje del circuito dentro de la carcasa impresa en 3D.</figcaption>
+        </figure>
+        <figure class="g-h2">
+          <img src="media/meowtech-5-carcasa-frente.jpg" width="1600" height="1066"
+               alt="Frente de la carcasa morada con interruptor rojo, conector de alimentación, dos potenciómetros y dos LEDs.">
+          <figcaption>Carcasa completa: interruptor, alimentación y potenciómetros.</figcaption>
+        </figure>
+      </div>
+      <section class="cuerpo bom">
+        <h3 class="etiqueta">Componentes utilizados</h3>
+        <ul class="bom-lista">
+            <li>Amplificador operacional LM324</li>
+            <li>Temporizador NE555</li>
+            <li>Transistor MOSFET IRLZ44N</li>
+            <li>Fotorresistencia LDR</li>
+            <li>Motor DC 9 V</li>
+            <li>Potenciómetros 500 kΩ</li>
+            <li>Resistencias 10 kΩ, 1 kΩ, 100 kΩ y 1 Ω</li>
+            <li>Condensadores cerámicos 104 (100 nF)</li>
+            <li>Diodos 1N4148</li>
+            <li>Diodos 1N4007</li>
+            <li>LEDs rojos 5 mm</li>
+            <li>Switch SPDT</li>
+            <li>Conector barrel jack 5,5 mm</li>
+            <li>Terminal blocks de 2 y 3 pines</li>
+            <li>Fuente de alimentación 5–9 V</li>
+        </ul>
+      </section>
+    </div>
+  </article>
+
+  <!-- PROYECTO: La Voz de las Plantas -->
+  <article class="proyecto" id="la-voz-de-las-plantas">
+    <div class="contenedor">
+
+      <header class="proyecto-cabecera">
+        <div>
+          <p class="etiqueta">Proyecto de examen · 2026</p>
+          <h2>La Voz de las Plantas</h2>
+          <p class="bajada">Una planta de menta que se ve y se escucha: su actividad eléctrica se convierte en imagen y sonido en tiempo real.</p>
+        </div>
+        <figure class="portada" style="margin:0; background:#3a3a32">
+          <img src="media/plantas-portada.jpg" width="419" height="583"
+               alt="Planta de menta en un macetero blanco con pinzas de cocodrilo conectadas a sus hojas, tallo y tierra, y cables que van hacia el circuito.">
+        </figure>
+      </header>
+
+      <dl class="ficha">
+        <div><dt class="etiqueta">Tipo</dt><dd>Bio-sonificación y visualización generativa</dd></div>
+        <div><dt class="etiqueta">Sensor</dt><dd>4 electrodos en la planta y conversor ADS1115 de 16 bits</dd></div>
+        <div><dt class="etiqueta">Conexión</dt><dd>WiFi y MQTT (HiveMQ Cloud)</dd></div>
+        <div><dt class="etiqueta">Equipo</dt><dd>Braulio Figueroa, Marlen Soto, Luisa Toro, Marcela Zúñiga</dd></div>
+      </dl>
+
+      <section class="cuerpo sin-titulo">
+        <div>
+          <p>El proyecto busca hacer visible el mundo invisible de las plantas y darles una voz a través de la tecnología. Las plantas cambian sus micro-voltajes internos según lo que ocurre a su alrededor; La Voz de las Plantas lee esas variaciones y las traduce en una visualización generativa y un sonido que reaccionan en tiempo real.</p>
+          <p>Cuatro pinzas de cocodrilo funcionan como electrodos en distintas partes de una planta de menta: hoja grande, hoja pequeña, tallo y tierra. La planta actúa como una antena biológica: basta con acercar la mano para que la señal cambie.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="concepto" aria-label="Concepto">
+      <div class="contenedor">
+        <div class="interior">
+          <div class="celda">
+            <p class="etiqueta">Idea</p>
+            <h4>Darle voz a una planta</h4>
+            <p>La planta no es solo un sensor: es un organismo con partes que responden de forma distinta. Por eso se mide en cuatro puntos y cada uno tiene su propia onda, su propio color y su propio sonido.</p>
+          </div>
+          <div class="celda">
+            <p class="etiqueta">Sistema</p>
+            <h4>De la hoja al navegador</h4>
+            <p>Planta, ADS1115 y Arduino UNO R4 WiFi publican las lecturas por MQTT. El navegador las recibe y genera la imagen con p5.js y el sonido con Web Audio API.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="contenedor">
+      <div class="galeria">
+        <figure class="g-video">
+          <video src="media/plantas-prueba.mp4" poster="media/plantas-prueba-poster.jpg"
+                 controls playsinline preload="metadata" width="720" height="1280"></video>
+          <figcaption>Video de prueba: la visualización reacciona a la señal de la planta.</figcaption>
+        </figure>
+        <div class="g-texto">
+          <p>Un módulo ADS1115 de 16 bits lee los micro-voltajes de los cuatro electrodos y el Arduino UNO R4 WiFi los publica por MQTT en HiveMQ Cloud. Para presentar en sala, el Arduino crea su propia red WiFi y funciona sin internet.</p>
+          <p>En el navegador, p5.js dibuja un núcleo orgánico con cuatro capas de color, una por electrodo, y Web Audio API genera un oscilador por cada una: del silencio a un drone grave, y luego a timbres más agudos y ásperos según la actividad. La clave fue calibrar el rango con los valores reales de la planta, que llegaban hasta ±19.000 al acercar la mano.</p>
+          <a class="enlace" href="https://github.com/brauliofigueroa2001/dis9079-2026-1/tree/main/00-examen/grupo-7" target="_blank" rel="noopener">Ver el desarrollo completo en GitHub ↗</a>
+        </div>
+      </div>
+
+      <section class="cuerpo bom">
+        <h3 class="etiqueta">Componentes utilizados</h3>
+        <ul class="bom-lista">
+            <li>Arduino UNO R4 WiFi</li>
+            <li>Módulo ADS1115 (conversor ADC de 16 bits)</li>
+            <li>Pinzas de cocodrilo (electrodos)</li>
+            <li>Cables jumper macho-macho</li>
+            <li>Cable flexible 24 AWG</li>
+            <li>Protoboard</li>
+            <li>Planta de menta</li>
+            <li>Cable USB-C</li>
+        </ul>
+      </section>
+    </div>
+  </article>
+
+  <!-- SOBRE MÍ -->
+  <section class="sobre-mi" id="sobre-mi">
+    <div class="contenedor">
+      <div class="cuerpo">
+        <h2 class="etiqueta">Sobre mí</h2>
+        <div>
+          <p>Actualmente curso cuarto año de la carrera de Diseño. En mis primeros años me especialicé en diseño gráfico, área en la que desarrollé conocimientos en diseño editorial, tipografía y branding.</p>
+          <p>Desde 2025 he orientado mi formación hacia la electrónica y la programación, participando en diversos proyectos que integran ambas disciplinas. En este ámbito cuento con conocimientos en diseño de interfaces electrónicas, lectura e interpretación de esquemáticos, diseño de placas PCB en KiCad y soldadura de componentes. Programo en C++ sobre Arduino, trabajando con distintos sensores y actuadores, y cuento además con conocimientos en Raspberry Pi. También he desarrollado proyectos de comunicación inalámbrica (IoT), conectando dispositivos por WiFi a la plataforma Adafruit IO mediante el protocolo MQTT.</p>
+          <p>Me interesa el diseño desde un enfoque experimental, artístico y reflexivo, sin perder de vista su utilidad para un usuario determinado. Me atrae la tecnología en sus distintas formas: la interacción humano-computadora, los juguetes electrónicos y el mundo de los sintetizadores y el sonido electrónico análogo. A futuro, me interesa profundizar en el diseño sonoro.</p>
+          <p>Documento mi trabajo e investigación en GitHub, utilizando Markdown como formato de registro.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="contacto" id="contacto">
+    <div class="contenedor">
+      <div class="cuerpo">
+        <h2 class="etiqueta">Contacto</h2>
+        <dl class="contacto-lista">
+          <div>
+            <dt class="etiqueta">Correo</dt>
+            <dd>
+              <span id="correo">braulio.figueroa@mail.udp.cl</span>
+              <button type="button" class="copiar" id="copiar-correo">Copiar</button>
+            </dd>
+          </div>
+          <div>
+            <dt class="etiqueta">GitHub</dt>
+            <dd><a href="https://github.com/brauliofigueroa2001" target="_blank" rel="noopener">brauliofigueroa2001 ↗</a></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <span class="etiqueta">Portafolio · <span id="anio">2026</span></span>
+    <a class="etiqueta" href="#inicio">Volver arriba ↑</a>
+  </div>
+</footer>
+
+<script>
+  // Año del pie
+  document.getElementById('anio').textContent = new Date().getFullYear();
+
+  // Los videos de proceso se reproducen solo cuando están en pantalla
+  // (y nunca si la persona prefiere menos movimiento).
+  (function () {
+    var quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var videos = document.querySelectorAll('video.bucle');
+    if (quieto || !('IntersectionObserver' in window)) {
+      videos.forEach(function (v) { v.controls = true; });
+      return;
+    }
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (e.isIntersecting) { e.target.play().catch(function () {}); }
+        else { e.target.pause(); }
+      });
+    }, { threshold: 0.35 });
+    videos.forEach(function (v) { obs.observe(v); });
+  })();
+
+  // Copiar correo (con respaldo: seleccionar el texto)
+  (function () {
+    var boton = document.getElementById('copiar-correo');
+    var correo = document.getElementById('correo');
+    if (!boton || !correo) return;
+    function seleccionar() {
+      var rango = document.createRange(); rango.selectNodeContents(correo);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(rango);
+      boton.textContent = 'Seleccionado';
+    }
+    boton.addEventListener('click', function () {
+      var texto = correo.textContent.trim();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(function () {
+          boton.textContent = 'Copiado';
+          setTimeout(function () { boton.textContent = 'Copiar'; }, 2000);
+        }).catch(seleccionar);
+      } else { seleccionar(); }
+    });
+  })();
+</script>
+</body>
+</html>
